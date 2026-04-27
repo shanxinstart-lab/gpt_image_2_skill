@@ -144,7 +144,9 @@ uv tool upgrade gpt-image-cli
 
 </details>
 
-从环境变量或 `~/.env` 读取 `OPENAI_API_KEY`。
+从环境变量或 `~/.env` 读取 `OPENAI_API_KEY`。可选配置：
+设置 `openai_base_url`（或 `OPENAI_BASE_URL`）即可使用 OpenAI 兼容接口；
+未设置时使用 OpenAI SDK 的默认官方 API 地址。
 
 ---
 

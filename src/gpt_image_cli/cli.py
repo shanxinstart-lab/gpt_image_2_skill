@@ -15,8 +15,9 @@ Mirrors the two official endpoints from the OpenAI cookbook using the official
     client.images.edit(...)       — text + image(s) → image (with -i; mask via -m)
 
 Every documented parameter is exposed as a flag. Reads OPENAI_API_KEY from env
-or ~/.env. Writes the returned PNG/JPEG/WebP bytes to disk and prints the output
-path(s) on stdout.
+or ~/.env. Optionally reads openai_base_url / OPENAI_BASE_URL to target an
+OpenAI-compatible endpoint. Writes the returned PNG/JPEG/WebP bytes to disk and
+prints the output path(s) on stdout.
 
 Exit codes: 0 success, 1 API error, 2 bad args.
 
@@ -59,13 +60,29 @@ from openai import APIError, OpenAI
 
 
 def _load_env_chain() -> None:
-    """Resolve OPENAI_API_KEY from the canonical config chain.
+    """Resolve OpenAI config from the canonical config chain.
 
     Order: process env → ./.env → ~/.env (later wins for ~/.env so the user's
     canonical secret store beats stale shell exports).
     """
     load_dotenv(Path.cwd() / ".env", override=False)
     load_dotenv(Path.home() / ".env", override=True)
+
+
+def _resolve_openai_base_url() -> str | None:
+    """Read optional OpenAI-compatible base URL from env config."""
+    base_url = os.environ.get("openai_base_url") or os.environ.get("OPENAI_BASE_URL")
+    if base_url:
+        base_url = base_url.strip()
+    return base_url or None
+
+
+def build_openai_client() -> OpenAI:
+    """Create an SDK client, overriding the default base URL only when configured."""
+    base_url = _resolve_openai_base_url()
+    if base_url:
+        return OpenAI(base_url=base_url)
+    return OpenAI()
 
 
 SIZE_SHORTCUTS: dict[str, str] = {
@@ -272,7 +289,7 @@ def main() -> int:
     ext = args.output_format or "png"
     out_path = Path(args.file).expanduser().resolve() if args.file else default_output_path(args.prompt, ext)
 
-    client = OpenAI()  # auto-reads OPENAI_API_KEY
+    client = build_openai_client()
 
     try:
         result = call_edit(client, args) if args.image else call_generate(client, args)

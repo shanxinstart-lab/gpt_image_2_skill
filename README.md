@@ -144,7 +144,9 @@ uv tool upgrade gpt-image-cli
 
 </details>
 
-Reads `OPENAI_API_KEY` from the environment or `~/.env`.
+Reads `OPENAI_API_KEY` from the environment or `~/.env`. Optional:
+set `openai_base_url` (or `OPENAI_BASE_URL`) to use an OpenAI-compatible
+endpoint; when omitted, the official OpenAI API base URL is used.
 
 ---
 

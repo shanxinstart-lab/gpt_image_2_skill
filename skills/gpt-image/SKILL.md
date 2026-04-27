@@ -1,6 +1,6 @@
 ---
 name: gpt-image
-description: General-purpose image generation and reference-image editing via OpenAI GPT Image 2 (`gpt-image-2`). Wraps the two official endpoints from the OpenAI cookbook — `/v1/images/generations` for text-to-image and `/v1/images/edits` for reference-image edits (including alpha-channel masks). Use whenever an agent or user needs to (a) generate an image from a text prompt, (b) restyle or transform an image using a reference image, (c) combine multiple reference images, (d) inpaint a region using a PNG mask, or (e) render dense typography / Chinese text. Reads `OPENAI_API_KEY` from env; writes PNG/JPEG/WebP to disk. Optional Scale references under `references/` for the full prompt-gallery atlas, cross-cutting prompt craft, and official OpenAI parameter guidance.
+description: General-purpose image generation and reference-image editing via OpenAI GPT Image 2 (`gpt-image-2`). Wraps the two official endpoints from the OpenAI cookbook — `/v1/images/generations` for text-to-image and `/v1/images/edits` for reference-image edits (including alpha-channel masks). Use whenever an agent or user needs to (a) generate an image from a text prompt, (b) restyle or transform an image using a reference image, (c) combine multiple reference images, (d) inpaint a region using a PNG mask, or (e) render dense typography / Chinese text. Reads `OPENAI_API_KEY` from env; optionally reads `openai_base_url` / `OPENAI_BASE_URL` for OpenAI-compatible endpoints; writes PNG/JPEG/WebP to disk. Optional Scale references under `references/` for the full prompt-gallery atlas, cross-cutting prompt craft, and official OpenAI parameter guidance.
 ---
 
 # gpt-image
@@ -20,7 +20,7 @@ uvx --from git+https://github.com/wuyoscar/gpt_image_2_skill gpt-image -p "PROMP
 gpt-image -p "PROMPT" [-f OUT] [-i REF...] [-m MASK] [options]
 ```
 
-Reads `OPENAI_API_KEY` from env. Writes to `OUT` (or auto-named `YYYY-MM-DD-HH-MM-SS-<slug>.png` in `./fig/` or cwd). Prints output path(s) on stdout. Exit 0 on success, 1 on API error, 2 on bad args / missing key.
+Reads `OPENAI_API_KEY` from env. Optional `openai_base_url` / `OPENAI_BASE_URL` points the SDK at an OpenAI-compatible endpoint; if unset, the SDK default base URL is used. Writes to `OUT` (or auto-named `YYYY-MM-DD-HH-MM-SS-<slug>.png` in `./fig/` or cwd). Prints output path(s) on stdout. Exit 0 on success, 1 on API error, 2 on bad args / missing key.
 
 ## CLI flags (complete reference)
 
